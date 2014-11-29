@@ -1,6 +1,8 @@
 
 public class SudokuClient {
 	public static void main(String [] args){
+		System.out.println("Please select the file from which you wish to read from");
+		
 		int grid[][] = {{3, 0, 6, 5, 0, 8, 4, 0, 0},
 				{5, 2, 0, 0, 0, 0, 0, 0, 0},
 				{0, 8, 7, 0, 0, 0, 0, 3, 1},

@@ -169,8 +169,6 @@ public class Game {
 		System.out.println();
 	}
 	
-	public void dummy()
-	{
-	}
-	}
+
+	
 }
