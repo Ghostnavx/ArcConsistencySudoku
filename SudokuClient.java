@@ -45,6 +45,6 @@ public class SudokuClient {
 		long endTime = System.currentTimeMillis();
 		System.out.println("Execution time: " + (endTime - startTime) + "ms");
 		input.close();
-		//System.out.println("Nodes expanded: " + test.counter);
+		System.out.println("Nodes expanded: " + test.counter);
 	}
 }
