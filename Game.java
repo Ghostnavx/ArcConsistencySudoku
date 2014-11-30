@@ -12,7 +12,7 @@ public class Game {
 	static ArrayList<Set<Integer>> colVals;
 	static ArrayList<Set<Integer>> boxVals;
 
-
+	//initializes the game
 	public Game(int [][] grid){
 		rowVals = new ArrayList<Set<Integer>>();
 		colVals = new ArrayList<Set<Integer>>();
@@ -33,6 +33,7 @@ public class Game {
 		enforceArc();
 	}
 
+	//backtracking 
 	public boolean basicSolve(String arg){
 		int [] coordinates = findEmpty();
 		if(coordinates == null)
@@ -69,6 +70,7 @@ public class Game {
 		return false;
 	}
 
+	//fills the the empty spaces with domains 
 	public void generateDomains(){
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
@@ -81,6 +83,7 @@ public class Game {
 		}
 	}
 
+	//
 	public static int findStupidSquare(int x, int y){
 		int startX = x - x%3;
 		int startY = y - y%3;
@@ -89,6 +92,8 @@ public class Game {
 		return boxNum;
 	}
 
+	//This would be arc elimination in a way
+	//it removes all impossible values from the domain
 	public static boolean enforceArc(){
 		Set<Integer> temp;
 		for(int i = 0; i < 9; i++){
@@ -109,10 +114,13 @@ public class Game {
 		return true;
 	}
 
+	//the union validitor, basically if row, col and box are all good
+	//then the solution is valid
 	public static boolean isValid(int x, int y, int val){
 		return rowGood(y, val) && colGood(x, val) && boxGood(x, y, val);
 	}
 
+	//row validator
 	public static boolean rowGood(int y, int val){
 		for(int i = 0; i < 9; i++){
 			if(gameBoard[y][i].getVal() == val)
@@ -121,6 +129,7 @@ public class Game {
 		return true;
 	}
 
+	//column validator
 	public static boolean colGood(int x, int val){
 		for(int i = 0; i < 9; i++){
 			if(gameBoard[i][x].getVal() == val)
@@ -129,6 +138,7 @@ public class Game {
 		return true;
 	}
 
+	//box validator
 	public static boolean boxGood(int x, int y, int val){
 		int startX = x - x%3;
 		int startY = y - y%3;
@@ -142,6 +152,7 @@ public class Game {
 		return true;
 	}
 
+	//finds empty squares and returns the coords as an int array
 	public static int [] findEmpty(){
 		int [] coordinates = new int[2];
 		for(int i = 0; i < 9; i++){
@@ -156,6 +167,7 @@ public class Game {
 		return null;
 	}
 
+	//prints the board....
 	public void printBoard(){
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
