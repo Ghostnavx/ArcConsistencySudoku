@@ -25,7 +25,17 @@ public class SudokuClient {
 			algorithmChoice = input.nextInt();
 		}
 
-		Game test = new Game(grid);
+		int grid2[][] = {{8,0,0,0,0,0,0,0,0},
+				{0,0,3,6,0,0,0,0,0},
+				{0,7,0,0,9,0,2,0,0},
+				{0,5,0,0,0,7,0,0,0},
+				{0,0,0,0,4,5,7,0,0},
+				{0,0,0,1,0,0,0,3,0},
+				{0,0,1,0,0,0,0,6,8},
+				{0,0,8,5,0,0,0,1,0},
+				{0,9,0,0,0,0,4,0,0}};
+
+		Game test = new Game(grid2);
 		long startTime = System.currentTimeMillis();
 		if(test.basicSolve("STANDARD"))
 			System.out.println("Victory!");
@@ -35,5 +45,6 @@ public class SudokuClient {
 		long endTime = System.currentTimeMillis();
 		System.out.println("Execution time: " + (endTime - startTime) + "ms");
 		input.close();
+		System.out.println("Nodes expanded: " + test.counter);
 	}
 }

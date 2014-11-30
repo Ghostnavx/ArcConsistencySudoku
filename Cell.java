@@ -7,11 +7,7 @@ public class Cell {
 	//initializes a cell for every square in the sodoku game
 	public Cell(int a){
 		domain = new HashSet<Integer>();
-		domain.add(a);
-		if(a == 0)
-			value = 0;
-		else
-			value = a;
+		value = a;
 	}
 	
 	//gets the value of the cell
@@ -21,12 +17,7 @@ public class Cell {
 	
 	//updates the cell with a proper value
 	public void updateCell(int a){
-		domain.clear();
-		domain.add(a);
-		if(a == 0)
-			value = 0;
-		else
-			value = a;
+		value = a;
 	}
 	
 	//updates the domain after elimination
