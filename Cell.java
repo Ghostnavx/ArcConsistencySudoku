@@ -6,23 +6,14 @@ public class Cell {
 	
 	public Cell(int a){
 		domain = new HashSet<Integer>();
-		domain.add(a);
-		if(a == 0)
-			value = 0;
-		else
-			value = a;
+		value = a;
 	}
 	
 	public int getVal(){
 		return value;
 	}
 	public void updateCell(int a){
-		domain.clear();
-		domain.add(a);
-		if(a == 0)
-			value = 0;
-		else
-			value = a;
+		value = a;
 	}
 	
 	public void updateDomain(Set<Integer> input){
