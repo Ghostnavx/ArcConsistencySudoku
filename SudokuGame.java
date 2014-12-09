@@ -35,50 +35,130 @@ public class SudokuGame {
 	}
 
 	public static void main (String [] args) throws FileNotFoundException{				
-		int grid1[][] = {{3, 0, 6, 5, 0, 8, 4, 0, 0},
-				{5, 2, 0, 0, 0, 0, 0, 0, 0},
-				{0, 8, 7, 0, 0, 0, 0, 3, 1},
-				{0, 0, 3, 0, 1, 0, 0, 8, 0},
-				{9, 0, 0, 8, 6, 3, 0, 0, 5},
-				{0, 5, 0, 0, 9, 0, 6, 0, 0},
-				{1, 3, 0, 0, 0, 0, 2, 5, 0},
-				{0, 0, 0, 0, 0, 0, 0, 7, 4},
-				{0, 0, 5, 2, 0, 6, 3, 0, 0}};
 
-		int grid2[][] = {{8,0,0,0,0,0,0,0,0},
-				{0,0,3,6,0,0,0,0,0},
-				{0,7,0,0,9,0,2,0,0},
-				{0,5,0,0,0,7,0,0,0},
-				{0,0,0,0,4,5,7,0,0},
-				{0,0,0,1,0,0,0,3,0},
-				{0,0,1,0,0,0,0,6,8},
-				{0,0,8,5,0,0,0,1,0},
-				{0,9,0,0,0,0,4,0,0}};
-
-		int grid3[][] = {{0,0,0,0,3,7,6,0,0},
-				{0,0,0,6,0,0,0,9,0},
-				{0,0,8,0,0,0,0,0,4},
-				{0,9,0,0,0,0,0,0,1},
-				{6,0,0,0,0,0,0,0,9},
-				{3,0,0,0,0,0,0,4,0},
-				{7,0,0,0,0,0,8,0,0},
-				{0,1,0,0,0,9,0,0,0},
-				{0,0,2,5,4,0,0,0,0}};
-		
 		/* Add in your own sudoku puzzle either manually or using getGrid() which takes a file path as a parameter.
-		 * Include your sudoku grid in the game constructor.
+		 * Include your sudoku grid in the game constructor (or one of the provided ones).
+		 * SudokuGame constructor takes a 9x9 int array ranging 0-9.
 		 * I've added a couple test cases for convenience as well.
 		 * The parameters for solve() are the search type, and the ordering type.
 		 * Your options for search type are: "basic", "lookahead", "arc".
 		 * Your options for ordering type are: "static", "backwards", "mostconstrained", "leastconstrained".
 		 */
 
-		SudokuGame game = new SudokuGame(grid3);
+
+		SudokuGame game = new SudokuGame(getPremadeGrid());
+		String [] gameArgs = getArgs();
 		game.printBoard();
-		game.Solve("arc", "mostconstrained");
+		game.Solve(gameArgs[0], gameArgs[1]);
 	}
 
-	public static int [][] getGrid(String fileName) throws FileNotFoundException{
+	public static String [] getArgs(){
+		String [] args = new String[2];
+		System.out.println("Enter the number corresponding to the ordering type you would like to use:");
+		System.out.println("1: Static -- simply iterate through the puzzle linearly");
+		System.out.println("2: Backwards -- same as static but starting from opposite end");
+		System.out.println("3: Random -- randomly pick cells to assign");
+		System.out.println("4: Least Constrained -- pick a cell with the largest domain");
+		System.out.println("5: Most Constrained -- pick a cell with the smallest domain");
+		Scanner scan = new Scanner(System.in);
+		int a;
+		while(true){
+			String input = scan.next();
+			if(input.matches("\\d")){
+				a = Integer.parseInt(input);
+				if(a > 0 && a < 6)
+					break;
+				else
+					System.err.println("Invalid choice.  Pick 1-5");
+			}
+			else
+				System.err.println("Invalid choice.  Pick 1-5");
+		}
+		switch (a){
+		
+		case 1:
+			args[1] = "static";
+			break;
+		case 2:
+			args[1] = "backwards";
+			break;
+		case 3:
+			args[1] = "random";
+			break;
+		case 4:
+			args[1] = "leastconstrained";
+			break;
+		case 5:
+			args[1] = "mostconstrained";
+		}
+		
+		System.out.println("Enter the type of search you would like to use:");
+		System.out.println("1: Standard -- basic recursion");
+		System.out.println("2: Foward Check -- looks ahead to spot failure earlier on");
+		System.out.println("3: Arc Consistency -- maintains all arcs to detect failure even faster");
+		while(true){
+			String input = scan.next();
+			if(input.matches("\\d")){
+				a = Integer.parseInt(input);
+				if(a > 0 && a < 4)
+					break;
+				else
+					System.err.println("Invalid choice.  Pick 1-3");
+			}
+			else
+				System.err.println("Invalid choice.  Pick 1-3");
+		}
+		scan.close();
+		
+		switch (a){
+		
+		case 1:
+			args[0] = "standard";
+			break;
+		case 2:
+			args[0] = "lookahead";
+			break;
+		case 3: 
+			args[0] = "arc";
+			break;
+		}
+		return args;
+	}
+
+	public static int [][] getPremadeGrid(){
+		while(true){
+			System.out.println("Enter 1, 2, 3 to choose a puzzle");
+			Scanner input = new Scanner(System.in);
+			String line = input.next();
+
+			if(line.matches("\\d")){
+				int a = Integer.parseInt(line);
+				if(a > 0 && a < 4){
+					Scanner scan = new Scanner(SudokuGame.class.getClassLoader().getResourceAsStream(a + ".txt"));
+					String liner;
+					Scanner parse;
+					int [][] newBoard = new int [9][9];
+					for(int i = 0; i < 9; i++){
+						liner = scan.nextLine();
+						parse = new Scanner(liner);
+						parse.useDelimiter(",");
+						for(int j = 0; j < 9; j++){
+							newBoard[i][j] = Integer.parseInt(parse.next());
+						}
+					}
+					scan.close();
+					return newBoard;
+				}
+				else{
+					System.err.println("Invalid puzzle choice.  Pick 1, 2, or 3.");
+				}
+			}
+			else
+				System.err.println("Invalid puzzle choice.  Pick 1, 2, or 3.");
+		}
+	}
+
+	public static int [][] getCustomGrid(String fileName) throws FileNotFoundException{
 		File file = new File(fileName);
 		Scanner scan = new Scanner(file);
 		int [][] newBoard = new int [9][9];
@@ -191,7 +271,7 @@ public class SudokuGame {
 				System.exit(1);
 			}
 			startTime = System.currentTimeMillis();
-			
+
 			if(arcSolve(gameBoard, orderType)){
 				System.out.println("Solution Found:");
 				printBoard();
