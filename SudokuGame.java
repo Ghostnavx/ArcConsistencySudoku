@@ -34,6 +34,7 @@ public class SudokuGame {
 		}
 	}
 
+	//prompt user for input parameters
 	public static void main (String [] args) throws FileNotFoundException{				
 		SudokuGame game = new SudokuGame(getPremadeGrid());
 		String [] gameArgs = getArgs();
@@ -41,6 +42,7 @@ public class SudokuGame {
 		game.Solve(gameArgs[0], gameArgs[1]);
 	}
 
+	//pick arguments for search type
 	public static String [] getArgs(){
 		String [] args = new String[2];
 		System.out.println("Enter the number corresponding to the ordering type you would like to use:");
@@ -114,6 +116,7 @@ public class SudokuGame {
 		return args;
 	}
 
+	//pick puzzle to use
 	public static int [][] getPremadeGrid(){
 		while(true){
 			System.out.println("Enter 1, 2, 3 to choose a puzzle");
@@ -147,6 +150,7 @@ public class SudokuGame {
 		}
 	}
 
+	//import your own puzzle (have to manually put this method in the main if you want to use it)
 	public static int [][] getCustomGrid(String fileName) throws FileNotFoundException{
 		File file = new File(fileName);
 		Scanner scan = new Scanner(file);
@@ -160,6 +164,7 @@ public class SudokuGame {
 		return newBoard;
 	}
 
+	//make a copy of the board to keep track of values during arc consistency
 	public Cell[][] copyBoard(Cell [][] oldBoard){
 		Cell [][] newBoard = new Cell[9][9];
 		for(int i = 0; i < 9; i++){
@@ -170,6 +175,7 @@ public class SudokuGame {
 		return newBoard;
 	}
 
+	//revert to old values when backtracking in arc consistency
 	public void revertValues(Cell [][] copy){
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
@@ -178,6 +184,7 @@ public class SudokuGame {
 		}
 	}
 
+	//make sure constraints are ok
 	public boolean checkConstraints(Cell b){
 		if(b.activated){
 			for(Cell a: b.neighbors){
@@ -188,6 +195,7 @@ public class SudokuGame {
 		return true;
 	}
 
+	//keep track of each cell's neighbors
 	public ArrayList<Cell> backUpNeighbors(Cell a){
 		ArrayList<Cell> backUp = new ArrayList<Cell>();
 		for(Cell b: a.neighbors)
@@ -196,12 +204,14 @@ public class SudokuGame {
 		return backUp;
 	}
 
+	//return neighbor values
 	public void revertNeighbors(ArrayList<Cell> a){
 		for(Cell b: a){
 			gameBoard[b.y][b.x].domain = new HashSet<Integer>(b.domain);
 		}
 	}
 
+	//checks domain of neighbors
 	public boolean checkNeighborDomains(Cell a){
 		for(Cell b: a.neighbors){
 			b.domain.removeAll(a.domain);
@@ -211,6 +221,7 @@ public class SudokuGame {
 		return true;
 	}
 
+	//sets intitial domains for forward checking
 	public void setInitialDomains(){
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
@@ -224,10 +235,12 @@ public class SudokuGame {
 		}
 	}
 
+	//recursive solve method, behaves differently depending on parameters
 	public void Solve(String searchType, String orderType){
 		long startTime;
 		switch (searchType.toUpperCase()){
 
+		//basic recursion
 		case "BASIC":
 			startTime = System.currentTimeMillis();
 			if(simpleSolve(gameBoard, orderType)){
@@ -240,6 +253,7 @@ public class SudokuGame {
 			System.out.println("Nodes Expanded: " + counter);
 			break;
 
+		//forward checking
 		case "LOOKAHEAD":
 			setInitialDomains();
 			startTime = System.currentTimeMillis();
@@ -253,6 +267,7 @@ public class SudokuGame {
 			System.out.println("Nodes Expanded: " + counter);
 			break;
 
+		//arc consistency
 		case "ARC":
 			arcs = createArcs();
 			if(!fixArc(true)){
@@ -273,6 +288,7 @@ public class SudokuGame {
 		}
 	}
 
+	//forward checking
 	public boolean lookAheadSolve(Cell [][] board, String arg){
 		counter++;
 		int [] coordinates = findEmpty(arg);
@@ -299,6 +315,7 @@ public class SudokuGame {
 		return false;
 	}
 
+	//basic recursion 
 	public boolean simpleSolve(Cell [][] board, String arg){
 		counter++;
 		int [] coordinates = findEmpty(arg);
@@ -324,6 +341,7 @@ public class SudokuGame {
 		return false;
 	}
 
+	//arc consistency
 	public boolean arcSolve(Cell [][] board, String arg){
 		Cell [][] backUp = copyBoard(board);
 		counter++;
@@ -351,6 +369,7 @@ public class SudokuGame {
 		return false;
 	}
 
+	//make arcs consistent
 	public boolean fixArc(boolean printStuff){
 		LinkedList<Arc> arc = new LinkedList(arcs);
 		Arc temp;
@@ -363,6 +382,7 @@ public class SudokuGame {
 			}
 		}
 
+		//if we've got an empty domain we have already failed, so return false
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
 				if(gameBoard[i][j].domain.size() == 0){
@@ -376,6 +396,7 @@ public class SudokuGame {
 		//System.out.println(county);
 	}
 
+	//if there's an inconsistency, remove it
 	public boolean removeInconsistent(Arc arc){
 		boolean returnStuff = false;
 		boolean check = true;
@@ -397,6 +418,7 @@ public class SudokuGame {
 		return returnStuff;
 	}
 
+	//create all 1620 arcs between cells
 	public LinkedList<Arc> createArcs(){
 		LinkedList<Arc> arcs = new LinkedList<Arc>();
 		for(int i = 0; i < 9; i++){
@@ -406,7 +428,8 @@ public class SudokuGame {
 		}
 		return arcs;
 	}
-
+	
+	//genereate neighbors for cells
 	public LinkedList<Arc> generateNeighbors(int x, int y){
 		LinkedList<Arc> neighbors = new LinkedList<Arc>();
 		for(int i = 0; i < 9; i++){
@@ -434,6 +457,7 @@ public class SudokuGame {
 		return neighbors;
 	}
 
+	//get the neighbors of a certain cell
 	public LinkedList<Cell> getCellNeighbors(int x, int y){
 		LinkedList<Cell> neighbors = new LinkedList<Cell>();
 		for(int i = 0; i < 9; i++){
@@ -456,6 +480,7 @@ public class SudokuGame {
 		return neighbors;
 	}
 
+	//finds an empty cell, different depending on parameters
 	public int [] findEmpty(String arg){
 		long start = System.currentTimeMillis();
 		int [] coordinates = new int[2];
@@ -480,6 +505,7 @@ public class SudokuGame {
 		return null;
 	}
 
+	//most constrained 
 	public int [] mostConstrained(){
 		int constraints = 10;
 		Cell chosen = null;
@@ -510,6 +536,7 @@ public class SudokuGame {
 		return coordinates;
 	}
 
+	//least constrained
 	public int [] leastConstrained(){
 		int constraints = 0;
 		Cell chosen = null;
@@ -540,6 +567,7 @@ public class SudokuGame {
 		return coordinates;
 	}
 
+	//random
 	public int [] random(){
 		ArrayList<Cell> openCells = new ArrayList<Cell>();
 		Random rand = new Random();
@@ -557,6 +585,7 @@ public class SudokuGame {
 		return coordinates;
 	}
 
+	//standard
 	public int [] standard(){
 		int [] coordinates = new int[2];
 		for(int i = 0; i < 9; i++){
@@ -571,6 +600,7 @@ public class SudokuGame {
 		return null;
 	}
 
+	//backwards
 	public int [] backwards(){
 		int [] coordinates = new int[2];
 		for(int i = 8; i >=0; i--){
@@ -585,6 +615,7 @@ public class SudokuGame {
 		return null;
 	}
 
+	//prints the board
 	public void printBoard(){
 		for(int i = 0; i < 9; i++){
 			for(int j = 0; j < 9; j++){
