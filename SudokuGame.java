@@ -102,7 +102,7 @@ public class SudokuGame {
 		switch (a){
 		
 		case 1:
-			args[0] = "standard";
+			args[0] = "basic";
 			break;
 		case 2:
 			args[0] = "lookahead";
