@@ -35,17 +35,6 @@ public class SudokuGame {
 	}
 
 	public static void main (String [] args) throws FileNotFoundException{				
-
-		/* Add in your own sudoku puzzle either manually or using getGrid() which takes a file path as a parameter.
-		 * Include your sudoku grid in the game constructor (or one of the provided ones).
-		 * SudokuGame constructor takes a 9x9 int array ranging 0-9.
-		 * I've added a couple test cases for convenience as well.
-		 * The parameters for solve() are the search type, and the ordering type.
-		 * Your options for search type are: "basic", "lookahead", "arc".
-		 * Your options for ordering type are: "static", "backwards", "mostconstrained", "leastconstrained".
-		 */
-
-
 		SudokuGame game = new SudokuGame(getPremadeGrid());
 		String [] gameArgs = getArgs();
 		game.printBoard();
